@@ -1,50 +1,20 @@
 export declare const styles: {
-    fab: {
-        position: "absolute";
-        bottom: number;
-        right: number;
-        width: number;
-        height: number;
-        borderRadius: number;
+    bottomBar: {
         backgroundColor: string;
-        justifyContent: "center";
-        alignItems: "center";
-        zIndex: number;
-    } | {
-        shadowColor: string;
-        shadowOffset: {
-            width: number;
-            height: number;
-        };
-        shadowOpacity: number;
-        shadowRadius: number;
-        elevation?: undefined;
-        position: "absolute";
-        bottom: number;
-        right: number;
-        width: number;
         height: number;
-        borderRadius: number;
-        backgroundColor: string;
         justifyContent: "center";
+        paddingBottom: number;
+    };
+    bottomBarContent: {
+        flexDirection: "row";
         alignItems: "center";
-        zIndex: number;
-    } | {
-        elevation: number;
-        shadowColor?: undefined;
-        shadowOffset?: undefined;
-        shadowOpacity?: undefined;
-        shadowRadius?: undefined;
-        position: "absolute";
-        bottom: number;
-        right: number;
-        width: number;
-        height: number;
-        borderRadius: number;
-        backgroundColor: string;
         justifyContent: "center";
-        alignItems: "center";
-        zIndex: number;
+        gap: number;
+    };
+    bottomBarText: {
+        color: string;
+        fontSize: number;
+        fontWeight: "600";
     };
     modalContainer: {
         flex: number;

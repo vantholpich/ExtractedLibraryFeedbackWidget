@@ -8,29 +8,23 @@ const subtleTextColor = '#6b7280';
 const borderColor = '#e5e7eb';
 
 export const styles = StyleSheet.create({
-    // FAB
-    fab: {
-        position: 'absolute',
-        bottom: 32,
-        right: 24,
-        width: 60,
-        height: 60,
-        borderRadius: 30,
+    // Bottom Bar
+    bottomBar: {
         backgroundColor: primaryColor,
+        height: 30,
         justifyContent: 'center',
+        paddingBottom: Platform.OS === 'ios' ? 20 : 0, // Inset for safe area if needed
+    },
+    bottomBarContent: {
+        flexDirection: 'row',
         alignItems: 'center',
-        zIndex: 9999,
-        ...Platform.select({
-            ios: {
-                shadowColor: primaryColor,
-                shadowOffset: { width: 0, height: 4 },
-                shadowOpacity: 0.35,
-                shadowRadius: 10,
-            },
-            android: {
-                elevation: 8,
-            }
-        })
+        justifyContent: 'center',
+        gap: 10,
+    },
+    bottomBarText: {
+        color: '#fff',
+        fontSize: 16,
+        fontWeight: '600',
     },
     // Modal Container
     modalContainer: {

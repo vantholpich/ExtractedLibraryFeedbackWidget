@@ -1,3 +1,37 @@
+"use strict";
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() { return m[k]; } };
+    }
+    Object.defineProperty(o, k2, desc);
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = (this && this.__importStar) || (function () {
+    var ownKeys = function(o) {
+        ownKeys = Object.getOwnPropertyNames || function (o) {
+            var ar = [];
+            for (var k in o) if (Object.prototype.hasOwnProperty.call(o, k)) ar[ar.length] = k;
+            return ar;
+        };
+        return ownKeys(o);
+    };
+    return function (mod) {
+        if (mod && mod.__esModule) return mod;
+        var result = {};
+        if (mod != null) for (var k = ownKeys(mod), i = 0; i < k.length; i++) if (k[i] !== "default") __createBinding(result, mod, k[i]);
+        __setModuleDefault(result, mod);
+        return result;
+    };
+})();
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -7,67 +41,133 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-import { Ionicons } from '@expo/vector-icons';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import React, { useEffect, useState } from 'react';
-import { Modal, Pressable, TouchableOpacity, View } from 'react-native';
-import Animated, { useAnimatedStyle, useSharedValue, withSpring } from 'react-native-reanimated';
-import { FeedbackView } from './FeedbackView';
-import { styles } from './styles';
-const AnimatedTouchableOpacity = Animated.createAnimatedComponent(TouchableOpacity);
-const STORAGE_KEY = '@feedbacks_storage_key';
-export const FeedbackWidget = () => {
-    const [isVisible, setIsVisible] = useState(false);
-    const [feedbacks, setFeedbacks] = useState([]);
-    const scale = useSharedValue(1);
-    useEffect(() => {
+var __generator = (this && this.__generator) || function (thisArg, body) {
+    var _ = { label: 0, sent: function() { if (t[0] & 1) throw t[1]; return t[1]; }, trys: [], ops: [] }, f, y, t, g = Object.create((typeof Iterator === "function" ? Iterator : Object).prototype);
+    return g.next = verb(0), g["throw"] = verb(1), g["return"] = verb(2), typeof Symbol === "function" && (g[Symbol.iterator] = function() { return this; }), g;
+    function verb(n) { return function (v) { return step([n, v]); }; }
+    function step(op) {
+        if (f) throw new TypeError("Generator is already executing.");
+        while (g && (g = 0, op[0] && (_ = 0)), _) try {
+            if (f = 1, y && (t = op[0] & 2 ? y["return"] : op[0] ? y["throw"] || ((t = y["return"]) && t.call(y), 0) : y.next) && !(t = t.call(y, op[1])).done) return t;
+            if (y = 0, t) op = [op[0] & 2, t.value];
+            switch (op[0]) {
+                case 0: case 1: t = op; break;
+                case 4: _.label++; return { value: op[1], done: false };
+                case 5: _.label++; y = op[1]; op = [0]; continue;
+                case 7: op = _.ops.pop(); _.trys.pop(); continue;
+                default:
+                    if (!(t = _.trys, t = t.length > 0 && t[t.length - 1]) && (op[0] === 6 || op[0] === 2)) { _ = 0; continue; }
+                    if (op[0] === 3 && (!t || (op[1] > t[0] && op[1] < t[3]))) { _.label = op[1]; break; }
+                    if (op[0] === 6 && _.label < t[1]) { _.label = t[1]; t = op; break; }
+                    if (t && _.label < t[2]) { _.label = t[2]; _.ops.push(op); break; }
+                    if (t[2]) _.ops.pop();
+                    _.trys.pop(); continue;
+            }
+            op = body.call(thisArg, _);
+        } catch (e) { op = [6, e]; y = 0; } finally { f = t = 0; }
+        if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
+    }
+};
+var __spreadArray = (this && this.__spreadArray) || function (to, from, pack) {
+    if (pack || arguments.length === 2) for (var i = 0, l = from.length, ar; i < l; i++) {
+        if (ar || !(i in from)) {
+            if (!ar) ar = Array.prototype.slice.call(from, 0, i);
+            ar[i] = from[i];
+        }
+    }
+    return to.concat(ar || Array.prototype.slice.call(from));
+};
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.FeedbackWidget = void 0;
+var vector_icons_1 = require("@expo/vector-icons");
+var async_storage_1 = __importDefault(require("@react-native-async-storage/async-storage"));
+var react_1 = __importStar(require("react"));
+var react_native_1 = require("react-native");
+var FeedbackView_1 = require("./FeedbackView");
+var styles_1 = require("./styles");
+var STORAGE_KEY = '@feedbacks_storage_key';
+var FeedbackWidget = function () {
+    var _a = (0, react_1.useState)(false), isVisible = _a[0], setIsVisible = _a[1];
+    var _b = (0, react_1.useState)([]), feedbacks = _b[0], setFeedbacks = _b[1];
+    (0, react_1.useEffect)(function () {
         loadFeedbacks();
     }, []);
-    const loadFeedbacks = () => __awaiter(void 0, void 0, void 0, function* () {
-        try {
-            const jsonValue = yield AsyncStorage.getItem(STORAGE_KEY);
-            if (jsonValue != null) {
-                setFeedbacks(JSON.parse(jsonValue));
+    var loadFeedbacks = function () { return __awaiter(void 0, void 0, void 0, function () {
+        var jsonValue, e_1;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0:
+                    _a.trys.push([0, 2, , 3]);
+                    return [4 /*yield*/, async_storage_1.default.getItem(STORAGE_KEY)];
+                case 1:
+                    jsonValue = _a.sent();
+                    if (jsonValue != null) {
+                        setFeedbacks(JSON.parse(jsonValue));
+                    }
+                    return [3 /*break*/, 3];
+                case 2:
+                    e_1 = _a.sent();
+                    console.error('Error loading feedbacks', e_1);
+                    return [3 /*break*/, 3];
+                case 3: return [2 /*return*/];
             }
-        }
-        catch (e) {
-            console.error('Error loading feedbacks', e);
-        }
-    });
-    const saveFeedbacks = (newFeedbacks) => __awaiter(void 0, void 0, void 0, function* () {
-        try {
-            const jsonValue = JSON.stringify(newFeedbacks);
-            yield AsyncStorage.setItem(STORAGE_KEY, jsonValue);
-        }
-        catch (e) {
-            console.error('Error saving feedbacks', e);
-        }
-    });
-    const animatedStyle = useAnimatedStyle(() => ({
-        transform: [{ scale: scale.value }],
-    }));
-    const toggleModal = () => setIsVisible(!isVisible);
-    const handlePressIn = () => {
-        scale.value = withSpring(0.9);
-    };
-    const handlePressOut = () => {
-        scale.value = withSpring(1);
-    };
-    const handleSubmit = (text) => __awaiter(void 0, void 0, void 0, function* () {
-        const newFeedback = {
-            id: Date.now().toString(),
-            text,
-            createdAt: Date.now(),
-        };
-        const updatedFeedbacks = [newFeedback, ...feedbacks];
-        setFeedbacks(updatedFeedbacks);
-        yield saveFeedbacks(updatedFeedbacks);
-    });
-    return (React.createElement(React.Fragment, null,
-        React.createElement(AnimatedTouchableOpacity, { style: [styles.fab, animatedStyle], onPress: toggleModal, onPressIn: handlePressIn, onPressOut: handlePressOut, activeOpacity: 0.8 },
-            React.createElement(Ionicons, { name: "chatbubble-ellipses", size: 28, color: "#fff" })),
-        React.createElement(Modal, { visible: isVisible, animationType: "slide", transparent: true, onRequestClose: toggleModal },
-            React.createElement(View, { style: styles.modalContainer },
-                React.createElement(Pressable, { style: styles.modalOverlay, onPress: toggleModal }),
-                React.createElement(FeedbackView, { feedbacks: feedbacks, onClose: toggleModal, onSubmit: handleSubmit })))));
+        });
+    }); };
+    var saveFeedbacks = function (newFeedbacks) { return __awaiter(void 0, void 0, void 0, function () {
+        var jsonValue, e_2;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0:
+                    _a.trys.push([0, 2, , 3]);
+                    jsonValue = JSON.stringify(newFeedbacks);
+                    return [4 /*yield*/, async_storage_1.default.setItem(STORAGE_KEY, jsonValue)];
+                case 1:
+                    _a.sent();
+                    return [3 /*break*/, 3];
+                case 2:
+                    e_2 = _a.sent();
+                    console.error('Error saving feedbacks', e_2);
+                    return [3 /*break*/, 3];
+                case 3: return [2 /*return*/];
+            }
+        });
+    }); };
+    var toggleModal = function () { return setIsVisible(!isVisible); };
+    var handleSubmit = function (text) { return __awaiter(void 0, void 0, void 0, function () {
+        var newFeedback, updatedFeedbacks;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0:
+                    newFeedback = {
+                        id: Date.now().toString(),
+                        text: text,
+                        createdAt: Date.now(),
+                    };
+                    updatedFeedbacks = __spreadArray([newFeedback], feedbacks, true);
+                    setFeedbacks(updatedFeedbacks);
+                    return [4 /*yield*/, saveFeedbacks(updatedFeedbacks)];
+                case 1:
+                    _a.sent();
+                    return [2 /*return*/];
+            }
+        });
+    }); };
+    return (<>
+            <react_native_1.TouchableOpacity style={styles_1.styles.bottomBar} onPress={toggleModal} activeOpacity={0.9}>
+                <react_native_1.View style={styles_1.styles.bottomBarContent}>
+                    <vector_icons_1.Ionicons name="chatbubble-ellipses" size={20} color="#fff"/>
+                </react_native_1.View>
+            </react_native_1.TouchableOpacity>
+
+            <react_native_1.Modal visible={isVisible} animationType="slide" transparent={true} onRequestClose={toggleModal}>
+                <react_native_1.View style={styles_1.styles.modalContainer}>
+                    <react_native_1.Pressable style={styles_1.styles.modalOverlay} onPress={toggleModal}/>
+                    <FeedbackView_1.FeedbackView feedbacks={feedbacks} onClose={toggleModal} onSubmit={handleSubmit}/>
+                </react_native_1.View>
+            </react_native_1.Modal>
+        </>);
 };
+exports.FeedbackWidget = FeedbackWidget;

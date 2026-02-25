@@ -1,32 +1,52 @@
-import { Platform, StyleSheet } from 'react-native';
-const primaryColor = '#6366f1';
-const backgroundColor = '#ffffff';
-const surfaceColor = '#f3f4f6';
-const textColor = '#1f2937';
-const subtleTextColor = '#6b7280';
-const borderColor = '#e5e7eb';
-export const styles = StyleSheet.create({
-    // FAB
-    fab: Object.assign({ position: 'absolute', bottom: 32, right: 24, width: 60, height: 60, borderRadius: 30, backgroundColor: primaryColor, justifyContent: 'center', alignItems: 'center', zIndex: 9999 }, Platform.select({
-        ios: {
-            shadowColor: primaryColor,
-            shadowOffset: { width: 0, height: 4 },
-            shadowOpacity: 0.35,
-            shadowRadius: 10,
-        },
-        android: {
-            elevation: 8,
+"use strict";
+var __assign = (this && this.__assign) || function () {
+    __assign = Object.assign || function(t) {
+        for (var s, i = 1, n = arguments.length; i < n; i++) {
+            s = arguments[i];
+            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
+                t[p] = s[p];
         }
-    })),
+        return t;
+    };
+    return __assign.apply(this, arguments);
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.styles = void 0;
+var react_native_1 = require("react-native");
+var primaryColor = '#6366f1';
+var backgroundColor = '#ffffff';
+var surfaceColor = '#f3f4f6';
+var textColor = '#1f2937';
+var subtleTextColor = '#6b7280';
+var borderColor = '#e5e7eb';
+exports.styles = react_native_1.StyleSheet.create({
+    // Bottom Bar
+    bottomBar: {
+        backgroundColor: primaryColor,
+        height: 30,
+        justifyContent: 'center',
+        paddingBottom: react_native_1.Platform.OS === 'ios' ? 20 : 0, // Inset for safe area if needed
+    },
+    bottomBarContent: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'center',
+        gap: 10,
+    },
+    bottomBarText: {
+        color: '#fff',
+        fontSize: 16,
+        fontWeight: '600',
+    },
     // Modal Container
     modalContainer: {
         flex: 1,
         justifyContent: 'flex-end',
         backgroundColor: 'rgba(0, 0, 0, 0.5)',
     },
-    modalOverlay: Object.assign({}, StyleSheet.absoluteFillObject),
+    modalOverlay: __assign({}, react_native_1.StyleSheet.absoluteFillObject),
     // Main View Content
-    contentContainer: Object.assign({ backgroundColor: backgroundColor, borderTopLeftRadius: 28, borderTopRightRadius: 28, height: '80%', overflow: 'hidden' }, Platform.select({
+    contentContainer: __assign({ backgroundColor: backgroundColor, borderTopLeftRadius: 28, borderTopRightRadius: 28, height: '80%', overflow: 'hidden' }, react_native_1.Platform.select({
         ios: {
             shadowColor: '#000',
             shadowOffset: { width: 0, height: -4 },
@@ -108,7 +128,7 @@ export const styles = StyleSheet.create({
         alignItems: 'flex-end',
         paddingHorizontal: 16,
         paddingVertical: 14,
-        paddingBottom: Platform.OS === 'ios' ? 32 : 16,
+        paddingBottom: react_native_1.Platform.OS === 'ios' ? 32 : 16,
         borderTopWidth: 1,
         borderTopColor: borderColor,
         backgroundColor: backgroundColor,

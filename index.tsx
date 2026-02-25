@@ -2,18 +2,17 @@ import { Ionicons } from '@expo/vector-icons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import React, { useEffect, useState } from 'react';
 import { Modal, Pressable, TouchableOpacity, View } from 'react-native';
-import Animated, { useAnimatedStyle, useSharedValue, withSpring } from 'react-native-reanimated';
+import Animated from 'react-native-reanimated';
 import { FeedbackView } from './FeedbackView';
 import { styles } from './styles';
 import { FeedbackItem } from './types';
 
-const AnimatedTouchableOpacity = Animated.createAnimatedComponent(TouchableOpacity);
 const STORAGE_KEY = '@feedbacks_storage_key';
 
 export const FeedbackWidget: React.FC = () => {
     const [isVisible, setIsVisible] = useState(false);
     const [feedbacks, setFeedbacks] = useState<FeedbackItem[]>([]);
-    const scale = useSharedValue(1);
+
 
     useEffect(() => {
         loadFeedbacks();
@@ -39,19 +38,11 @@ export const FeedbackWidget: React.FC = () => {
         }
     };
 
-    const animatedStyle = useAnimatedStyle(() => ({
-        transform: [{ scale: scale.value }],
-    }));
+
 
     const toggleModal = () => setIsVisible(!isVisible);
 
-    const handlePressIn = () => {
-        scale.value = withSpring(0.9);
-    };
 
-    const handlePressOut = () => {
-        scale.value = withSpring(1);
-    };
 
     const handleSubmit = async (text: string) => {
         const newFeedback: FeedbackItem = {
@@ -66,15 +57,15 @@ export const FeedbackWidget: React.FC = () => {
 
     return (
         <>
-            <AnimatedTouchableOpacity
-                style={[styles.fab, animatedStyle]}
+            <TouchableOpacity
+                style={styles.bottomBar}
                 onPress={toggleModal}
-                onPressIn={handlePressIn}
-                onPressOut={handlePressOut}
-                activeOpacity={0.8}
+                activeOpacity={0.9}
             >
-                <Ionicons name="chatbubble-ellipses" size={28} color="#fff" />
-            </AnimatedTouchableOpacity>
+                <View style={styles.bottomBarContent}>
+                    <Ionicons name="chatbubble-ellipses" size={20} color="#fff" />
+                </View>
+            </TouchableOpacity>
 
             <Modal
                 visible={isVisible}
