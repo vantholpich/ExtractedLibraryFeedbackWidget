@@ -1,13 +1,17 @@
 import { Ionicons } from '@expo/vector-icons';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import * as Application from 'expo-application';
+import Constants from 'expo-constants';
 import React, { useEffect, useState } from 'react';
 import { Modal, Pressable, TouchableOpacity, View } from 'react-native';
-import Animated from 'react-native-reanimated';
 import { FeedbackView } from './FeedbackView';
 import { styles } from './styles';
+import { supabase } from './supabaseClient';
 import { FeedbackItem } from './types';
 
-const STORAGE_KEY = '@feedbacks_storage_key';
+// Local storage key removed as we are now using Supabase
+// const STORAGE_KEY = '@feedbacks_storage_key';
+
+const APP_ID = Constants.expoConfig?.name ?? 'unknown-app';
 
 export const FeedbackWidget: React.FC = () => {
     const [isVisible, setIsVisible] = useState(false);
@@ -20,23 +24,29 @@ export const FeedbackWidget: React.FC = () => {
 
     const loadFeedbacks = async () => {
         try {
-            const jsonValue = await AsyncStorage.getItem(STORAGE_KEY);
-            if (jsonValue != null) {
-                setFeedbacks(JSON.parse(jsonValue));
+            const { data, error } = await supabase
+                .from('feedbacks')
+                .select('*')
+                .eq('app_id', APP_ID)
+                .order('created_at', { ascending: false });
+
+            if (error) throw error;
+
+            if (data) {
+                // Map DB fields to component types if necessary
+                const mappedData: FeedbackItem[] = data.map(item => ({
+                    id: item.id.toString(),
+                    text: item.text,
+                    createdAt: new Date(item.created_at).getTime(),
+                }));
+                setFeedbacks(mappedData);
             }
         } catch (e) {
-            console.error('Error loading feedbacks', e);
+            console.error('Error loading feedbacks from Supabase', e);
         }
     };
 
-    const saveFeedbacks = async (newFeedbacks: FeedbackItem[]) => {
-        try {
-            const jsonValue = JSON.stringify(newFeedbacks);
-            await AsyncStorage.setItem(STORAGE_KEY, jsonValue);
-        } catch (e) {
-            console.error('Error saving feedbacks', e);
-        }
-    };
+    // saveFeedbacks removed as we now insert directly into Supabase in handleSubmit
 
 
 
@@ -45,14 +55,27 @@ export const FeedbackWidget: React.FC = () => {
 
 
     const handleSubmit = async (text: string) => {
-        const newFeedback: FeedbackItem = {
-            id: Date.now().toString(),
-            text,
-            createdAt: Date.now(),
-        };
-        const updatedFeedbacks = [newFeedback, ...feedbacks];
-        setFeedbacks(updatedFeedbacks);
-        await saveFeedbacks(updatedFeedbacks);
+        try {
+            const { data, error } = await supabase
+                .from('feedbacks')
+                .insert([
+                    { text, app_id: APP_ID }
+                ])
+                .select();
+
+            if (error) throw error;
+
+            if (data && data[0]) {
+                const newFeedback: FeedbackItem = {
+                    id: data[0].id.toString(),
+                    text: data[0].text,
+                    createdAt: new Date(data[0].created_at).getTime(),
+                };
+                setFeedbacks(prev => [newFeedback, ...prev]);
+            }
+        } catch (e) {
+            console.error('Error submitting feedback to Supabase', e);
+        }
     };
 
     return (

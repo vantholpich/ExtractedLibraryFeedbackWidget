@@ -80,15 +80,19 @@ var __spreadArray = (this && this.__spreadArray) || function (to, from, pack) {
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
+var _a, _b;
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.FeedbackWidget = void 0;
 var vector_icons_1 = require("@expo/vector-icons");
-var async_storage_1 = __importDefault(require("@react-native-async-storage/async-storage"));
+var expo_constants_1 = __importDefault(require("expo-constants"));
 var react_1 = __importStar(require("react"));
 var react_native_1 = require("react-native");
 var FeedbackView_1 = require("./FeedbackView");
 var styles_1 = require("./styles");
-var STORAGE_KEY = '@feedbacks_storage_key';
+var supabaseClient_1 = require("./supabaseClient");
+// Local storage key removed as we are now using Supabase
+// const STORAGE_KEY = '@feedbacks_storage_key';
+var APP_ID = (_b = (_a = expo_constants_1.default.expoConfig) === null || _a === void 0 ? void 0 : _a.name) !== null && _b !== void 0 ? _b : 'unknown-app';
 var FeedbackWidget = function () {
     var _a = (0, react_1.useState)(false), isVisible = _a[0], setIsVisible = _a[1];
     var _b = (0, react_1.useState)([]), feedbacks = _b[0], setFeedbacks = _b[1];
@@ -96,62 +100,69 @@ var FeedbackWidget = function () {
         loadFeedbacks();
     }, []);
     var loadFeedbacks = function () { return __awaiter(void 0, void 0, void 0, function () {
-        var jsonValue, e_1;
-        return __generator(this, function (_a) {
-            switch (_a.label) {
+        var _a, data, error, mappedData, e_1;
+        return __generator(this, function (_b) {
+            switch (_b.label) {
                 case 0:
-                    _a.trys.push([0, 2, , 3]);
-                    return [4 /*yield*/, async_storage_1.default.getItem(STORAGE_KEY)];
+                    _b.trys.push([0, 2, , 3]);
+                    return [4 /*yield*/, supabaseClient_1.supabase
+                            .from('feedbacks')
+                            .select('*')
+                            .eq('app_id', APP_ID)
+                            .order('created_at', { ascending: false })];
                 case 1:
-                    jsonValue = _a.sent();
-                    if (jsonValue != null) {
-                        setFeedbacks(JSON.parse(jsonValue));
+                    _a = _b.sent(), data = _a.data, error = _a.error;
+                    if (error)
+                        throw error;
+                    if (data) {
+                        mappedData = data.map(function (item) { return ({
+                            id: item.id.toString(),
+                            text: item.text,
+                            createdAt: new Date(item.created_at).getTime(),
+                        }); });
+                        setFeedbacks(mappedData);
                     }
                     return [3 /*break*/, 3];
                 case 2:
-                    e_1 = _a.sent();
-                    console.error('Error loading feedbacks', e_1);
+                    e_1 = _b.sent();
+                    console.error('Error loading feedbacks from Supabase', e_1);
                     return [3 /*break*/, 3];
                 case 3: return [2 /*return*/];
             }
         });
     }); };
-    var saveFeedbacks = function (newFeedbacks) { return __awaiter(void 0, void 0, void 0, function () {
-        var jsonValue, e_2;
-        return __generator(this, function (_a) {
-            switch (_a.label) {
-                case 0:
-                    _a.trys.push([0, 2, , 3]);
-                    jsonValue = JSON.stringify(newFeedbacks);
-                    return [4 /*yield*/, async_storage_1.default.setItem(STORAGE_KEY, jsonValue)];
-                case 1:
-                    _a.sent();
-                    return [3 /*break*/, 3];
-                case 2:
-                    e_2 = _a.sent();
-                    console.error('Error saving feedbacks', e_2);
-                    return [3 /*break*/, 3];
-                case 3: return [2 /*return*/];
-            }
-        });
-    }); };
+    // saveFeedbacks removed as we now insert directly into Supabase in handleSubmit
     var toggleModal = function () { return setIsVisible(!isVisible); };
     var handleSubmit = function (text) { return __awaiter(void 0, void 0, void 0, function () {
-        var newFeedback, updatedFeedbacks;
-        return __generator(this, function (_a) {
-            switch (_a.label) {
+        var _a, data, error, newFeedback_1, e_2;
+        return __generator(this, function (_b) {
+            switch (_b.label) {
                 case 0:
-                    newFeedback = {
-                        id: Date.now().toString(),
-                        text: text,
-                        createdAt: Date.now(),
-                    };
-                    updatedFeedbacks = __spreadArray([newFeedback], feedbacks, true);
-                    setFeedbacks(updatedFeedbacks);
-                    return [4 /*yield*/, saveFeedbacks(updatedFeedbacks)];
+                    _b.trys.push([0, 2, , 3]);
+                    return [4 /*yield*/, supabaseClient_1.supabase
+                            .from('feedbacks')
+                            .insert([
+                            { text: text, app_id: APP_ID }
+                        ])
+                            .select()];
                 case 1:
-                    _a.sent();
-                    return [2 /*return*/];
+                    _a = _b.sent(), data = _a.data, error = _a.error;
+                    if (error)
+                        throw error;
+                    if (data && data[0]) {
+                        newFeedback_1 = {
+                            id: data[0].id.toString(),
+                            text: data[0].text,
+                            createdAt: new Date(data[0].created_at).getTime(),
+                        };
+                        setFeedbacks(function (prev) { return __spreadArray([newFeedback_1], prev, true); });
+                    }
+                    return [3 /*break*/, 3];
+                case 2:
+                    e_2 = _b.sent();
+                    console.error('Error submitting feedback to Supabase', e_2);
+                    return [3 /*break*/, 3];
+                case 3: return [2 /*return*/];
             }
         });
     }); };
